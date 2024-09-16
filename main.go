@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/csv"
 	"fmt"
 	"os"
@@ -24,8 +25,13 @@ func main() {
 		fmt.Println(err)
 	}
 
-	fmt.Println("Press Enter to start Quiz")
+	fmt.Print("Press Enter to start Quiz")
 
+	bufReader := bufio.NewReader(os.Stdin)
+
+	_, _ = bufReader.ReadString('\n')
+
+	fmt.Println("Lets start the Quiz!!")
 	startQuiz(records)
 
 	// fmt.Printf("Questions answered correctly: %v\n", correctAnswers)
@@ -37,6 +43,10 @@ func startQuiz(records [][]string) {
 
 	var correctAnswers []string
 	var incorrectAnswers []string
+
+	fmt.Print("Please enter the duration (in seconds) for test :")
+	var timer int
+	fmt.Scanln(&timer)
 
 	c := make(chan bool)
 
@@ -57,13 +67,15 @@ func startQuiz(records [][]string) {
 	select {
 
 	case <-c:
+		fmt.Println()
 		fmt.Printf("Questions answered correctly: %v\n", correctAnswers)
 		fmt.Printf("Questions answered incorrectly: %v\n", incorrectAnswers)
-		os.Exit(2)
-	case <-time.After(time.Second * 60):
+		break
+	case <-time.After(time.Second * time.Duration(timer)):
+		fmt.Println()
 		fmt.Printf("Questions answered correctly: %v\n", correctAnswers)
 		fmt.Printf("Questions answered incorrectly: %v\n", incorrectAnswers)
-		os.Exit(1)
+		break
 
 	}
 
